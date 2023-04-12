@@ -45,3 +45,41 @@
 		</form>
 	</div>
 </div>
+
+<script>
+$(document).ready(function() {
+	// 아이디 중복 확인
+	$('#loginIdCheckBtn').on('click', function(e) {
+		// validation
+		var loginId = $('input[name=loginId]').val().trim();
+		// id가 4자 이상이 아니면 경고문구 노출하고 끝낸다.
+		if (loginId.length < 4) {
+			$('#idCheckLength').removeClass('d-none'); // 경고문구 노출
+			$('#idCheckDuplicated').addClass('d-none'); // 숨김
+			$('#idCheckOk').addClass('d-none'); // 숨김
+			return;
+		}
+		
+		// 중복여부는 DB를 조회해야 하므로 서버에 묻는다. 
+		// 화면을 이동시키지 않고 ajax 통신으로 중복여부 확인하고 동적으로 문구 노출
+		$.ajax({
+			url: "/user/is_duplicated_id",
+			data: {"loginId": loginId},
+			success: function(data) {
+				if (data.result == true) { // 중복인 경우
+					$('#idCheckDuplicated').removeClass('d-none'); // 중복 경고문구 노출
+					$('#idCheckLength').addClass('d-none'); // 숨김
+					$('#idCheckOk').addClass('d-none'); // 숨김
+				} else {
+					$('#idCheckOk').removeClass('d-none'); // 사용가능 문구 노출
+					$('#idCheckLength').addClass('d-none'); // 숨김
+					$('#idCheckDuplicated').addClass('d-none'); // 숨김
+				}
+			},
+			error: function(error) {
+				alert("아이디 중복확인에 실패했습니다. 관리자에게 문의해주세요.");
+			}
+		});
+	});
+});
+</script>
