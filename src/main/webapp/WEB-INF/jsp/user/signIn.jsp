@@ -28,3 +28,36 @@
 		</div>
 	</div>
 </div>
+<script>
+$(document).ready(function() {
+	// 로그인 서브밋
+	$('#loginForm').submit(function(e) {
+		e.preventDefault(); // submit 자동 수행 중단
+		
+		var loginId = $('input[name=loginId]').val().trim();
+		if (loginId == '') {
+			alert("아이디를 입력해주세요.");
+			return;
+		}
+		
+		var password = $('input[name=password]').val();
+		if (password == '') {
+			alert("비밀번호를 입력해주세요.");
+			return;
+		}
+		
+		// AJAX로 서브밋
+		var url = $(this).attr("action");
+		var data = $(this).serialize(); // form의 name 속성으로 data를 구성한다.
+		
+		$.post(url, data)
+		.done(function(data) {
+			if (data.result == "success") {
+				location.href="/timeline/timeline_view"; 
+			} else {
+				alert("로그인에 실패했습니다. 다시 시도해주세요.");
+			}
+		}); 
+	});
+});
+</script>
